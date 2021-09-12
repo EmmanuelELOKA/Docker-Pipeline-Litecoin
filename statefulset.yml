@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test-app
+  labels:
+    app: test-app
+spec:
+  serviceName: "test"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - name: test-app
+        image: 752023216802.dkr.ecr.us-east-2.amazonaws.com/test:latest
+        ports:
+          - containerPort: 9333
+        volumeMounts:
+        - name: test-storage
+          mountPath: /home/litecoin/.litecoin
+  volumeClaimTemplates:
+  - metadata:
+      name: test-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#   name: test-app
+#spec:
+#    selector:
+#        app: test-app
+#    type: LoadBalancer
+#    ports:
+#        - protocol: TCP
+#          port: 80
+#          targetPort: 9333
